@@ -84,3 +84,34 @@ exports.getTodos = functions.https.onRequest(async (req, res) => {
     }
   }
 });
+
+exports.deleteTodo = functions.https.onRequest(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {
+    const bodyData = JSON.parse(req.body)
+    const user = await verifyUser(bodyData.token)
+    const ref = admin.firestore().collection('todos').doc(bodyData.todoId)
+    console.dir(ref)
+    try {
+      await admin.firestore().runTransaction(async t => {
+        const doc = await t.get(ref)
+        if (doc.data().user_id !== user.uid) {
+          throw(new Error('No access'))
+        } else {
+          await t.delete(ref)
+        }
+      })
+      res.json({ result: `deletion done` });
+    } catch (error) {
+      throw (error)
+    }
+  } catch (error) {
+    if (error.statusCode) {
+      res.status(error.statusCode).json(error.response)
+    }
+    else {
+      console.error(error)
+      res.sendStatus(500)
+    }
+  }
+});
