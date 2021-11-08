@@ -53,3 +53,34 @@ exports.addTodo = functions.https.onRequest(async (req, res) => {
     }
   }
 });
+
+exports.getTodos = functions.https.onRequest(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {
+    const bodyData = JSON.parse(req.body)
+    const user = await verifyUser(bodyData.token)
+    const snapshot = await admin.firestore().collection('todos').where('user_id', '==', user.uid).get()
+    const data = []
+    snapshot.forEach(doc => {
+      const docData = doc.data()
+      data.push({
+        id: doc.id,
+        content: docData.content,
+        status: docData.status
+      })
+    })
+    if (data.length > 0) {
+      res.json({ result: `${data.length} items finded and returned`, data });
+    } else {
+      res.json({ result: `No data for specified user finded`, data: [] });
+    }
+  } catch (error) {
+    if (error.statusCode) {
+      res.status(error.statusCode).json(error.response)
+    }
+    else {
+      console.error(error)
+      res.sendStatus(500)
+    }
+  }
+});
