@@ -27,7 +27,7 @@ const verifyUser = async (token) => {
 };
 
 exports.addTodo = functions
-    .region("europe-west1")
+    .region("europe-central2", "europe-west1")
     .https
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -66,7 +66,7 @@ exports.addTodo = functions
       }
     });
 exports.updateTodo = functions
-    .region("europe-west1")
+    .region("europe-central2", "europe-west1")
     .https
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -108,7 +108,7 @@ exports.updateTodo = functions
     });
 
 exports.getTodos = functions
-    .region("europe-west1")
+    .region("europe-central2", "europe-west1")
     .https
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -151,7 +151,7 @@ exports.getTodos = functions
     });
 
 exports.deleteTodo = functions
-    .region("europe-west1")
+    .region("europe-central2", "europe-west1")
     .https
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
