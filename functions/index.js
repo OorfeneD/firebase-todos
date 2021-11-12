@@ -32,7 +32,16 @@ exports.addTodo = functions
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
       try {
-        const bodyData = JSON.parse(req.body);
+        if (!req.body) {
+          res.sendStatus(400);
+        }
+        let bodyData;
+        try {
+          bodyData = JSON.parse(req.body);
+        } catch (error) {
+          res.sendStatus(400);
+          return;
+        }
         const user = await verifyUser(bodyData.token);
         const writeResult = await admin.firestore().collection("todos").add({
           content: {
@@ -62,7 +71,16 @@ exports.updateTodo = functions
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
       try {
-        const bodyData = JSON.parse(req.body);
+        if (!req.body) {
+          res.sendStatus(500);
+        }
+        let bodyData;
+        try {
+          bodyData = JSON.parse(req.body);
+        } catch (error) {
+          res.sendStatus(400);
+          return;
+        }
         const user = await verifyUser(bodyData.token);
         const ref = admin.firestore().collection("todos").doc(bodyData.todoId);
         try {
@@ -95,7 +113,16 @@ exports.getTodos = functions
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
       try {
-        const bodyData = JSON.parse(req.body);
+        if (!req.body) {
+          res.sendStatus(500);
+        }
+        let bodyData;
+        try {
+          bodyData = JSON.parse(req.body);
+        } catch (error) {
+          res.sendStatus(400);
+          return;
+        }
         const user = await verifyUser(bodyData.token);
         const snapshot = await admin.firestore().collection("todos")
             .where("user_id", "==", user.uid).get();
@@ -129,7 +156,16 @@ exports.deleteTodo = functions
     .onRequest(async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
       try {
-        const bodyData = JSON.parse(req.body);
+        if (!req.body) {
+          res.sendStatus(500);
+        }
+        let bodyData;
+        try {
+          bodyData = JSON.parse(req.body);
+        } catch (error) {
+          res.sendStatus(400);
+          return;
+        }
         const user = await verifyUser(bodyData.token);
         const ref = admin.firestore().collection("todos").doc(bodyData.todoId);
         try {
